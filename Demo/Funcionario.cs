@@ -45,6 +45,8 @@ namespace Demo
 
         private void DefinirSalario(double salario)
         {
+            if (salario < 500) throw new Exception("Salario inferior ao permitido");
+
             Salario = salario;
             if (salario < 2000) NivelProfissional = NivelProfissional.Junior;
             else if (salario >= 2000 && salario < 8000) NivelProfissional = NivelProfissional.Pleno;
