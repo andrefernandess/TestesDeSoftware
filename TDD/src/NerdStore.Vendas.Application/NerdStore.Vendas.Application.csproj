@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NerdStore.Vendas.Core\NerdStore.Vendas.Core.csproj" />
+    <ProjectReference Include="..\NerdStore.Vendas.Domain\NerdStore.Vendas.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="fluentvalidation" Version="11.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Events\" />
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
 </Project>

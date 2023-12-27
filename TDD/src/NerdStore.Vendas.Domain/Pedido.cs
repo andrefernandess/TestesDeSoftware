@@ -64,6 +64,7 @@ namespace NerdStore.Vendas.Domain
         public void CalcularValorPedido()
         {
             ValorTotal = PedidoItems.Sum(item => item.CalcularValor());
+            CalcularValorTotalDesconto();
         }
 
         private void ValidarQuantidadeItem(PedidoItem item)
@@ -146,46 +147,6 @@ namespace NerdStore.Vendas.Domain
 
                 return pedido;
             }
-        }
-    }
-
-    public enum PedidoStatus
-    {
-        Rascunho = 0,
-        Iniciado = 1,
-        Pago = 4,
-        Entregue = 5,
-        Cancelado = 6
-    }
-
-    public class PedidoItem
-    {
-        public Guid ProductId { get; private set; }
-        public string ProdutoNome { get; private set; }
-        public int Quantidade { get; private set; }
-        public decimal ValorUnitario { get; private set; }
-
-        public PedidoItem(Guid productId, 
-            string produtoNome, 
-            int quantidade, 
-            decimal valorUnitario)
-        {
-            if (quantidade < Pedido.MIN_UNIDADES_ITEM) throw new DomainException("Quantidade abaixo do permitido");
-
-            ProductId = productId;
-            ProdutoNome = produtoNome;
-            Quantidade = quantidade;
-            ValorUnitario = valorUnitario;
-        }
-
-        public void AdicionarUnidades(int unidades)
-        {
-            Quantidade += unidades;
-        }
-
-        public decimal CalcularValor()
-        {
-            return Quantidade * ValorUnitario;
         }
     }
 }

@@ -202,5 +202,52 @@ namespace NerdStore.Vendas.Domain.Tests
             // Assert
             Assert.Equal(valorTotalComDesconto, pedido.ValorTotal);
         }
+
+        [Fact(DisplayName = "Aplicar voucher com valor maior que valor total do pedido")]
+        [Trait("Categoria", "Vendas - Pedido")]
+        public void AplicarVoucher_DescontoMaiorQUeValorPedido_DeveRetornarValorPEdidoZero()
+        {
+            // Arrange
+            var pedido = Pedido.PedidoFactory.NovoPedidoRascunho(Guid.NewGuid());
+
+            var pedidoItem1 = new PedidoItem(Guid.NewGuid(), "Produto Xpto", 2, 100);
+            var pedidoItem2 = new PedidoItem(Guid.NewGuid(), "Produto Teste", 3, 15);
+            pedido.AdicionarItem(pedidoItem1);
+            pedido.AdicionarItem(pedidoItem2);
+
+            var voucher = new Voucher("PROMO-15-OFF", null, 250, 1, DateTime.Now.AddDays(10), true, false, TipoDescontoVoucher.Valor);
+
+            var valorTotalComDesconto = 0;
+
+            // Act
+            pedido.AplicarVoucher(voucher);
+
+            // Assert
+            Assert.Equal(valorTotalComDesconto, pedido.ValorTotal);
+        }
+
+        [Fact(DisplayName = "Aplicar voucher recalcular apos modificar pedido")]
+        [Trait("Categoria", "Vendas - Pedido")]
+        public void AplicarVoucher_ModificarItensPedido_DeveRecalcularDesconto()
+        {
+            // Arrange
+            var pedido = Pedido.PedidoFactory.NovoPedidoRascunho(Guid.NewGuid());
+
+            var pedidoItem1 = new PedidoItem(Guid.NewGuid(), "Produto Xpto", 2, 100);
+            var pedidoItem2 = new PedidoItem(Guid.NewGuid(), "Produto Teste", 3, 15);
+            pedido.AdicionarItem(pedidoItem1);
+
+            var voucher = new Voucher("PROMO-15-OFF", null, 45, 1, DateTime.Now.AddDays(10), true, false, TipoDescontoVoucher.Valor);
+
+            // Act
+            pedido.AplicarVoucher(voucher);
+
+            pedido.AdicionarItem(pedidoItem2);
+
+           var total_esperado = pedido.PedidoItems.Sum(x => x.ValorUnitario * x.Quantidade) - voucher.ValorDesconto;
+
+            // Assert
+            Assert.Equal(total_esperado, pedido.ValorTotal);
+        }
     }
 }
